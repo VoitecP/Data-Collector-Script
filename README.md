@@ -23,7 +23,8 @@ We have a dataset containing information about individuals, including their firs
     - Reject entries without provided telephone number
     - Remove duplicates(by telephone number or email) from the merged dataset. Save the newer entry based on the timestamp.
     - Store telephone numbers as 9 digits, remove any special characters and leading zeros (+48123456789, 00123456789, (48) 123456789, 123 456 789, all of these should be stored as 123456789)
-	
+    - All telephone numbers has been generated in a way that after removing special chars and leading zeros, there will always be a valid 9-digit number. For the purposes of this exercise you can omit further validation.	
+
 - **Validation Criteria for Emails:**
   - Email must contain only one "@" symbol.
   - The part before "@" must be at least 1 character long.
