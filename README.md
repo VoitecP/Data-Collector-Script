@@ -85,7 +85,7 @@ We have a dataset containing information about individuals, including their firs
   - Expected output: list of rows containing `<name-of-parent>,<parents-telephone-number>: <matched-child-name>, <matched-child-age>; <matched-child-name>, <matched-child-age>`
   
          >python script.py find-similar-children-by-age --login 555123456 --password sASfC1234
-         Brock, 789543123: Olive, 2; Bart, 4 
+         Brock, 789543123: Bart, 4; Olive, 2
          John, 432764512: Sally, 2
    
 ## Extra points for:
