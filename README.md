@@ -1,5 +1,8 @@
 ## Recruitment Task Directions
 
+### IMPORTANT UPDATE 
+Data files has been updated to alleviate uncertainty about telephone number processing
+
 ### Background
 We have a dataset containing information about individuals, including their first name, telephone number, email, password, role, date of account creation and a list of children with their names and ages. We would like you to build a script/CLI that performs some operations on the data.
 
