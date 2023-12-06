@@ -1,9 +1,11 @@
 import os
-from script_files import data_collector
-from script_files import data_validator
+from script_files.data_collector import DataCollector 
+from script_files.data_validator import DataValidator 
+from script_files.db_manager import read_test, create_database
+
 
 def path_setup():
-    # Set the data dir name
+    # Set the data directory name
     dir_name='data'
 
     root_path = os.path.dirname(os.path.abspath(__file__))
@@ -13,41 +15,39 @@ def path_setup():
     return path
 
 
-def file_writer(data, path):
+# def file_writer(data, path):
+def db_writer():
   
-    with open(path, 'w') as file:
-        for item in data:
-
-            # todo  data validation
-
-            valid=data_validator.DataValidator(data=item)
-        
-            if valid.validated is not None:
-            
-                file.write(str(valid.validated) + '\n') 
+        path = path_setup()
+        collector = DataCollector(path)
+        data = collector.collected
+        valid = DataValidator(data)
+        valid_data = valid.collected
+        create_database(valid_data)
 
 
 
-            # file.write(str(item) + '\n') 
-            
-        #file.write(str(data)) 
-
-        
-    
+     
 
 def main():
-    
-    path=path_setup()
-    collector=data_collector.DataCollector(file_path=path)
-    
-    # print(collector.data)
-    output_path='collected_data_validated2.txt'
-    # Todo write
-    # file_writer(collector.data_dict, output_path)
-    #file_writer(collector.data, output_path)
 
-    file_writer(collector.collected, output_path)
+    db_writer()
+
+    
+    pass
+
+def test():
+
+    
+    print('test')
+    
+
+    #db = python script.py create_database
+
+    pass
 
 
 if __name__ == '__main__':
     main()
+
+    #test()
