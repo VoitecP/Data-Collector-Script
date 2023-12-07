@@ -5,6 +5,7 @@ from sqlalchemy import Column
 from sqlalchemy import String 
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
+from sqlalchemy import exc
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import sessionmaker
@@ -65,26 +66,19 @@ session = Session()
 
 def create_database(data):
     
-    for item in data:
-        user = User(item)
-        session.add(user)
+    try:
+        for item in data:
+            user = User(item)
+            session.add(user)
+        session.commit()
+        return 'Database Created'
     
-    session.commit()
-
-
-
-# Test
-# def read_test():
-
-#     users = session.query(User).all()
-#     for user in users:
-#         print(f"User: {user.firstname}, Created At: {user.created_at}")
-#         for child in user.children:
-#             print(f" - Child: {child.name}, Age: {child.age}")
-
-#     session.close()
-
-#     return users
+    except exc.SQLAlchemyError as error:
+        session.rollback()
+        return f'Cannot create database: {error}'
+    
+    finally:
+         session.close()
 
 
 

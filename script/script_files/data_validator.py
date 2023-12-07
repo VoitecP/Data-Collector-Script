@@ -55,11 +55,6 @@ class DataValidator:
         pattern_1 = re.compile(r'^[^@]*@[^@]*$')
         pattern_2 = re.compile(r'^.+@.+?\.')
         pattern_3 = re.compile(r'\.[a-zA-Z0-9]{1,4}$')
-    
-        # bool_1 = bool(pattern_1.match(email))
-        # bool_2 = bool(pattern_2.match(email))
-        # bool_3 = bool(pattern_3.search(email))
-        # patterns=[bool_1,bool_2,bool_3]
 
         patterns=[
             (bool(pattern_1.match(email))),
