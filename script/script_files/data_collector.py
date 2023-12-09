@@ -4,16 +4,24 @@ import xml.etree.ElementTree as ETree
 
 
 class DataCollector:
+    """
+    Class for collecting and parsing data from given folder (need folder path)
+    Can serach also thru  subfolders.
+    Supports CSV, JSON, XML file types.
+    """
 
     def __init__(self, file_path):
         self.file_path = file_path
         collected_data = self.data_collector()   
         self.collected = collected_data
 
-
     def data_collector(self):
+        """
+        Function for collecting all datafrom file parsers to common list 
+        """
         data = []
         header = None
+
         for root, dirs, files in os.walk(self.file_path):
                 for file in files:
                     self.file_path = os.path.join(root, file)
@@ -31,17 +39,20 @@ class DataCollector:
                         data.append(json)
 
                     if extension.lower() == '.xml': 
-                        xml=self.read_xml()
+                        xml = self.read_xml()
                         data.append(xml)    
 
         flat_data=[]
+        # Flating data to get clean data and easy to process
         for list in data:
             flat_data.extend(list)
 
         return flat_data
-    
 
     def read_csv(self):
+        """
+        CSV file parser
+        """
         with open(self.file_path, 'r') as file:
             reader = csv.DictReader(file, delimiter=';')
             data_csv = []
@@ -52,21 +63,26 @@ class DataCollector:
                 if row['children']:
                     for children in row['children'].split(','):
                         name, age = children.strip().split()
-                        childrens.append({'name': name, 'age': age})
+                        age = age.replace('(', '').replace(')', '')
+                        childrens.append({'name': name, 'age': int(age)})
                 row['children'] = childrens
                 data_csv.append(row)
 
         return data_csv
 
-
-
     def read_json(self):
+        """
+        JSON file parser
+        """
         with open(self.file_path, 'r') as file:
             data_json = json.load(file)
+            
         return data_json
 
-
     def read_xml(self, tags=None):
+        """
+        XML file parser
+        """
         tree = ETree.parse(self.file_path)
         root = tree.getroot()
         data_xml =[]
@@ -84,7 +100,7 @@ class DataCollector:
             for child_element in element.findall('.//child'):
                 child_data = {
                     'name': child_element.find('name').text,
-                    'age': child_element.find('age').text,
+                    'age': int(child_element.find('age').text),
                 }
                 children_data.append(child_data)
 
@@ -93,5 +109,4 @@ class DataCollector:
 
         return data_xml
 
-        
-
+    

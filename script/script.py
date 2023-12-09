@@ -1,93 +1,183 @@
-import os
 import sys
 import argparse
-from script_files.user_actions import func_print_all_accounts
-from script_files.user_actions import func_create_database
+
+from script_files.user_actions import UserAction
 
 
+info = '''
+    Script coded by Wojciech Piwowarski
+
+    LIST OF ALL COMMANDS:
+    ## Create Database file, no auth need:
+
+        create_database
+
+    
+    ## Commands for admin only:
+
+        print-all-accounts --login <login> --password <password>
+        print-oldest-account --login <login> --password <password>
+        group-by-age --login <login> --password <password>
+
+    
+    ## Commands for all users:
+
+        print-children --login <login> --password <password>
+        find-similar-children-by-age --login <login> --password <password>
+    '''
 
 
+class CustomArgumentParser(argparse.ArgumentParser):
+    """
+    Custom class for return custom messages
+    """
 
+    def error(self, message):
+        """
+        Error handling rewrited message
+        """
+       
+        message = 'Wrong command type -h for Help'
+        self.print_usage()
+        self.exit(2, f"{message}\n")
+
+    def format_help(self):
+        """
+        Rewrited help message
+        """
+        return  info
+        
 
 def commander():
+    """
+    Main function for managing behavior of script, \n
+    Designed and coded by Wojciech Piwowarski     \n
+    as recrutation task to intern in   \n
+    Profil-Software company    \n
+    """
 
-    parser = argparse.ArgumentParser(description='Python CLI script,  coded by Wojciech Piwowarski')
-    subparsers = parser.add_subparsers(dest='command', metavar='command list    /',  help='/  Description')
+    c_prog = 'CLI Python Scipt'
+    c_description = 'Sript, for collecting data, from CSV, XML, JSON files'
 
-    create_database = subparsers.add_parser('create_database', help='Create Database')
+    parser = CustomArgumentParser(
+        prog = c_prog,
+        usage = info,
+        description = c_description,
+        add_help = True,
+        )
     
-    # print-all-accounts    # Admin 
-    print_all_accounts = subparsers.add_parser('print-all-accounts', help='Print all accounts')
-    print_all_accounts.add_argument('--login', required='print-all-accounts' in sys.argv, help='Login')
-    print_all_accounts.add_argument('--password', required='print-all-accounts' in sys.argv, help='Password')
-
-    # print-oldest-account  # Admin
-    print_oldest_account = subparsers.add_parser('print-oldest-account', help='Print oldest account')
-    print_oldest_account.add_argument('--login', required='print-all-accounts' in sys.argv, help='Login')
-    print_oldest_account.add_argument('--password', required='print-all-accounts' in sys.argv, help='Password')
-
-    # group-by-age   # Admin
-    group_by_age = subparsers.add_parser('group-by-age', help='Group by age')
-    group_by_age.add_argument('--login', required='print-all-accounts' in sys.argv, help='Login')
-    group_by_age.add_argument('--password', required='print-all-accounts' in sys.argv, help='Password')
+    subparsers = parser.add_subparsers(
+        dest='command', metavar='''  Command list''', help='''   Description''')
     
+    #
+    # Command name  (Without authentication)
+    # scripy.py create_database
+    #        
+    create_database = subparsers.add_parser(
+        'create_database', help='Create Database')
+    
+    #
+    # Command Name   (For admins only)
+    # script.py print-all-accounts --login <login> --password <password>
+    #
+    print_all_accounts = subparsers.add_parser(
+        'print-all-accounts', help='Print all accounts')
+    
+    print_all_accounts.add_argument(
+        '--login', required='print-all-accounts' in sys.argv, help='Login')
+    
+    print_all_accounts.add_argument(
+        '--password', required='print-all-accounts' in sys.argv, help='Password')
 
-    # print-children  # User
-    print_children = subparsers.add_parser('print-children', help='Print children')
-    print_children.add_argument('--login', required='print-all-accounts' in sys.argv, help='Login')
-    print_children.add_argument('--password', required='print-all-accounts' in sys.argv, help='Password')
+    #
+    # Command Name   (For admins only)
+    # script.py print-oldest-account --login <login> --password <password>
+    #
+    print_oldest_account = subparsers.add_parser(
+        'print-oldest-account', help='Print oldest account')
+    
+    print_oldest_account.add_argument(
+        '--login', required='print-oldest-account' in sys.argv, help='Login')
+    
+    print_oldest_account.add_argument(
+        '--password', required='print-oldest-account' in sys.argv, help='Password')
 
+    #
+    # Command Name   (For admins only)
+    # script.py group-by-age --login <login> --password <password>
+    #
+    group_by_age = subparsers.add_parser(
+        'group-by-age', help='Group by age')
+    
+    group_by_age.add_argument(
+        '--login', required='group-by-age' in sys.argv, help='Login')
+    
+    group_by_age.add_argument(
+        '--password', required='group-by-age' in sys.argv, help='Password')
+    
+    #
+    # Command Name   (For all users)
+    # script.py print-children --login <login> --password <password>
+    # 
+    print_children = subparsers.add_parser(
+        'print-children', help='Print children')
+    
+    print_children.add_argument(
+        '--login', required='print-children' in sys.argv, help='Login')
+    
+    print_children.add_argument(
+        '--password', required='print-children' in sys.argv, help='Password')
 
-    # find-similar-children-by-age    # User
-    similar_children = subparsers.add_parser('find-similar-children-by-age', help='Find similar children by age')
-    similar_children.add_argument('--login', required='print-all-accounts' in sys.argv, help='Login')
-    similar_children.add_argument('--password', required='print-all-accounts' in sys.argv, help='Password')
+    #
+    # Command Name   (For all users)
+    # script.py find-similar-children-by-age --login <login> --password <password>
+    #
+    similar_children = subparsers.add_parser(
+        'find-similar-children-by-age', help='Find similar children by age')
+    
+    similar_children.add_argument(
+        '--login', required='find-similar-children-by-age' in sys.argv, help='Login')
+    
+    similar_children.add_argument(
+        '--password', required='find-similar-children-by-age' in sys.argv, help='Password')
     
     args = parser.parse_args()
 
 
-
-    if args.command == 'create_database':
-        status = func_create_database()
+    #
+    # No auth
+    if args.command == 'create_database':    
+        status = UserAction.func_create_database()
         print(status)
-        # pass
 
-    elif args.command == 'print-all-accounts':  # Admin
-        result = func_print_all_accounts(args.login, args.password)
+    # For admin 
+    elif args.command == 'print-all-accounts':  
+        result = UserAction.func_print_all_accounts(args.login, args.password)
         print(result)
 
-        # # TODO  args  user actions 
-        # user = UserValidator(args.login, args.password)
-    
-        pass
-    elif args.command == 'print-oldest-account':   # Admin
-        print('oldest account')
-        pass
+    # For admin
+    elif args.command == 'print-oldest-account':  
+        result = UserAction.func_print_oldest_account(args.login, args.password)
+        print(result)
 
-    elif args.command == 'group-by-age':        # Admin
-        pass
+    # For admin    
+    elif args.command == 'group-by-age':      
+        result = UserAction.func_group_by_age(args.login, args.password)
+        print(result)
 
-    elif args.command == 'print-children':      # User
-        pass
+    # For User
+    elif args.command == 'print-children':    
+        result = UserAction.func_print_children(args.login, args.password)
+        print(result)
 
-    elif args.command == 'find-similar-children-by-age':    # User
-        pass
-
-    else:
-        print('Uknown Command.')
+    # For User
+    elif args.command == 'find-similar-children-by-age':  
+        result = UserAction.func_find_similar_children(args.login, args.password)
+        print(result)
         
-
-
-
-
-    
-
-
-
+        
+# Initiation of main function commander()
 if __name__ == '__main__':
     commander()
-
-
-
 
 

@@ -1,41 +1,209 @@
-import os
-from script_files.data_collector import DataCollector 
-from script_files.data_validator import DataValidator 
-from script_files.db_manager import create_database
-from script_files.db_manager import User
-from script_files.db_manager import Child
-from script_files.db_manager import session
+from sqlalchemy import asc, func, text, select
+from sqlalchemy.orm import joinedload
+
+from script_files.db_manager import Child, User, DataBaseManager
 from script_files.user_validator import UserValidator
 
 
-def func_create_database():
-    data_path = 'data'
+class UserAction:
+    """
+    Common class for all static methods used by Admin or user
+    """
 
-    root_path = os.path.dirname(os.path.abspath(__file__))
-    lvl1_path = os.path.dirname(root_path)
-    lvl2_path = os.path.dirname(lvl1_path)
-    path = os.path.join(lvl2_path, data_path)
-   
+    @staticmethod
+    def func_create_database():
+        """
+        Manually run method for creating database, collect data, 
+        and returns status if success or fail \n
+        No authentication need
+        """
 
-    collector = DataCollector(path)
-    data = collector.collected
-    valid = DataValidator(data)
-    valid_data = valid.collected
-    status = create_database(valid_data)
+        valid_data = DataBaseManager.data_validator()
+        status = DataBaseManager.create_database(valid_data)
+        
+        return status
+
+
+    @staticmethod
+    def func_print_all_accounts(login, password):
+        """
+        Manually run method for counting and printing all accounts \n
+        Only for Admin user
+        """
+
+        session = DataBaseManager.db_switcher()
+        user = UserValidator(login, password, session)
+
+        if user.admin:
+            query = session.query(User).count()
+            session.close()
+
+            return query
+        else:
+            session.close()
+            return 'Invalid Login'
+
+
+    @staticmethod
+    def func_print_oldest_account(login, password):
+        """
+        Manually run method for return oldest account
+        Only for Admin user
+        """
+
+        session = DataBaseManager.db_switcher()
+        user = UserValidator(login, password, session)
+
+        if user.admin:
+            query = (
+                session
+                .query(User)
+                .order_by(text("created_at"))
+                .first()
+            )
+            session.close()
+
+            return query
+        else:
+            session.close()
+            return 'Invalid Login'
+
+
+    @staticmethod
+    def func_group_by_age(login, password):
+        """
+        Manually run method for grouping childrens by age
+        Only for Admin user
+        """
+        
+        session = DataBaseManager.db_switcher()
+        user = UserValidator(login, password, session)
+
+        if user.admin: 
+            query = (
+                session
+                .query(Child.age, func.count(Child.id))
+                .group_by(Child.age)
+                .order_by(asc(func.count(Child.id)))
+                .all()
+            )  
+            session.close()
+
+            result = ''
+            for age, count in query:
+                result = result + f'age: {age}, count: {count}\n'
+
+            return result
+        else:
+            session.close()
+            return 'Invalid Login'
+        
+
+    @staticmethod
+    def func_print_children(login, password):
+        """
+        Manually run method for printing childrens
+        For all users
+        """
+         
+        session = DataBaseManager.db_switcher()
+        user = UserValidator(login, password, session)
+
+        if user.auth:
+            query = (
+                session
+                .query(Child)
+                .join(User)
+                .filter(User.id == user.instance.id)
+                .options(joinedload(Child.user))
+                .order_by(Child.name.asc())
+                .all()
+            )
+            session.close()
+
+            result = ''
+            for child in query:
+                result = result + f'{child.name}, {child.age}\n'
+
+            return result
+        else:
+            session.close()
+            return 'Invalid Login'
     
-    return status
 
+    @staticmethod
+    def func_find_similar_children(login, password):
+        """
+        Manually run method for printing similar childrens by age
+        For all users
+        """
 
-def func_print_all_accounts(login, password):
-    user = UserValidator(login, password)
+        session = DataBaseManager.db_switcher()
+        user = UserValidator(login, password, session)
 
-    if bool(user.admin and user.auth):
-        query = session.query(User).count()
-        session.close()
+        if user.auth:
+            # Sub query for get list of Childs age to use it as a filter 
+            subquery = (
+                session
+                .query(Child.age)
+                .join(User)
+                .filter(User.id == user.instance.id)
+                .distinct()
+                .subquery()
+            )
+            # Query returns list of sets (User, Child) instances
+            # It will duplicate User instance if User have 2 or more childs
+            query = (
+                session
+                .query(User, Child)
+                .join(Child) 
+                .options(joinedload(User.children))
+                .filter(Child.age.in_(select(subquery)))
+                .order_by(User.firstname.asc())
+                .order_by(Child.name.asc())
+                .all()
+            )
+            session.close()
 
-        return query
-    else:
-        return 'Invalid Login'
+            # Output Query Formatter, create list of dictionaries
+            # if user instance exist in list, only children Key / value
+            # will be updated
+            user_list = []
+            for user, child in query:
+                user_exist = False
+
+                for instance in user_list:
+
+                    if instance["user_id"] == user.id:
+                        user_exist = True
+                        
+                    if user_exist:
+                        children = f'; {child.name}, {child.age}'
+                        instance['childrens'] = instance['childrens'] + children
+                            
+                if not user_exist:
+                    children = f'{child.name}, {child.age}'
+                    instance = {
+                            'user_id': user.id,
+                            'firstname': f'{user.firstname}',
+                            'telephone': f'{user.telephone_number}',
+                            'email': f'{user.email}',
+                            'childrens': f'{children}'
+                        }  
+                    user_list.append(instance)
+            
+            # Creating output, formatted \n string
+            result = ''
+            for instance in user_list:
+                result = result + f"{instance['firstname']}, {instance['telephone']}: {instance['childrens']}\n"
+            
+            return result
+
+        else:
+            session.close()
+            return 'Invalid Login'
+    
+    
 
 
 
