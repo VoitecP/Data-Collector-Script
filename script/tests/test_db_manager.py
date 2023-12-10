@@ -103,9 +103,6 @@ def test_user_class(session, user_data):
     assert result.created_at == user_data['created_at']
 
 
-
-
-
 def test_create_database(session):
     '''
     Function test if database can be created
@@ -130,14 +127,12 @@ def test_create_database(session):
 def test_return_data_path():
     
     result = DataBaseManager.return_data_path()
-
     assert os.path.exists(result)
 
 
 def test_return_db_path():
     
     result = DataBaseManager.return_db_path()
-
     assert os.path.exists(result)
 
 

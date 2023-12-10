@@ -3,10 +3,8 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-
 from script_files.db_manager import Base, User
 from script_files.user_validator import LoginFormat, UserValidator
-
 
 
 @pytest.fixture(scope='session')
@@ -38,7 +36,6 @@ def session(engine, tables):
     connection.close()
 
 
-
 @pytest.fixture
 def valid_phone():
     phone = '123456789'
@@ -56,7 +53,6 @@ def valid_password():
 @pytest.fixture
 def invalid_password():
     return 'pass'
-
 
 
 def test_phone_format(valid_phone):
