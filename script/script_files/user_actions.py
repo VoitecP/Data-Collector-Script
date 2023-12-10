@@ -246,7 +246,7 @@ class UserAction:
                 Welcome in the Database
 
             Name:\t\t{user.firstname}
-            Phone:\t\t{user.telephone_number}'
+            Phone:\t\t{user.telephone_number}
             email: \t\t{user.email}
             password:   \t{user.password}
             role:\t\t{user.role}
