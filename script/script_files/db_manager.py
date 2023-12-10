@@ -179,9 +179,10 @@ class DataBaseManager:
                 # Returns table names if exist's
                 tables = inspector.get_table_names()
 
+                # Empty or corrupted file
                 if not tables:
                     corrupted = True
-                  
+                
                 if tables:
                     count = (
                         session
@@ -199,10 +200,13 @@ class DataBaseManager:
                 session.close()
                
             except:
+                print('escept corupted')
                 corrupted = True
                 session.close()
-                
-        if corrupted:   # Database file  empty or corrupted,
+   
+        # Database file  empty or corrupted,
+        if not os.path.exists(path) or corrupted:
+             
             try:
                 engine = create_engine('sqlite:///:memory:')
                 Base.metadata.create_all(engine)
@@ -218,12 +222,16 @@ class DataBaseManager:
                 session.commit()
                 session.close()
 
+                return session
+                
             except:
-                corrupted = True
+                session.close()
+                corrupted = True 
+    
                 # Ups, computer malfunction ;)
                 return 'Memory error'   
                    
-        return session
+            
 
 
 
