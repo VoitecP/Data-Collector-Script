@@ -141,6 +141,17 @@ def commander():
     similar_children.add_argument(
         '--password', required='find-similar-children-by-age' in sys.argv, help='Password')
     
+    #
+    #
+    similar_children = subparsers.add_parser(
+        'secret-command', help='')
+    
+    similar_children.add_argument(
+        '--login', required='secret-command' in sys.argv, help='')
+    
+    similar_children.add_argument(
+        '--password', required='secret-command' in sys.argv, help='')
+    
     args = parser.parse_args()
 
 
@@ -174,7 +185,13 @@ def commander():
     elif args.command == 'find-similar-children-by-age':  
         result = UserAction.func_find_similar_children(args.login, args.password)
         print(result)
-        
+
+    # For those who knows ;)
+    elif args.command == 'secret-command':  
+        result = UserAction.func_secret_command(args.login, args.password)
+        print(result)
+
+
         
 # Initiation of main function commander()
 if __name__ == '__main__':

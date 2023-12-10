@@ -74,6 +74,8 @@ class DataBaseManager:
     """
     Common class for all staticmethod for managing and processing database
     """
+    #TODO: I think, it will be good to isolate session as another method or variable
+    #TODO: to inject data to specific session / database
 
     @staticmethod
     def create_database(data):

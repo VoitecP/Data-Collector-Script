@@ -85,11 +85,11 @@ class UserValidator:
         self.password = password
         self.session = session
         self.instance = None
-        self.admin = False
-        self.auth = False
+        self.admin = False  
+        self.auth = False  
         self.format = LoginFormat(self.login, self.password)
-        self.auth = self.authenticate()
-        self.admin = self.is_admin()
+        self.auth = self.authenticate() 
+        self.admin = self.is_admin() 
       
 
     def authenticate(self):

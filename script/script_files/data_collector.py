@@ -12,8 +12,7 @@ class DataCollector:
 
     def __init__(self, file_path):
         self.file_path = file_path
-        collected_data = self.data_collector()   
-        self.collected = collected_data
+        self.collected = self.data_collector()   
 
     def data_collector(self):
         """
