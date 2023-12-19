@@ -5,8 +5,6 @@ from script_files.user_actions import UserAction
 
 
 info = '''
-    Script coded by Wojciech Piwowarski
-
     LIST OF ALL COMMANDS:
     ## Create Database file, no auth need:
 
@@ -51,9 +49,7 @@ class CustomArgumentParser(argparse.ArgumentParser):
 def commander():
     """
     Main function for managing behavior of script, \n
-    Designed and coded by Wojciech Piwowarski     \n
-    as recrutation task to intern in   \n
-    Profil-Software company    \n
+
     """
 
     c_prog = 'CLI Python Scipt'
@@ -185,12 +181,6 @@ def commander():
     elif args.command == 'find-similar-children-by-age':  
         result = UserAction.func_find_similar_children(args.login, args.password)
         print(result)
-
-    # For those who knows ;)
-    elif args.command == 'secret-command':  
-        result = UserAction.func_secret_command(args.login, args.password)
-        print(result)
-
 
         
 # Initiation of main function commander()

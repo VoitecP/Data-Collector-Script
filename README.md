@@ -7,7 +7,7 @@
 
 Clone repository to specific folder:
 ```
-git clone https://github.com/VoitecP/Profile-Software-Task.git
+git clone https://github.com/VoitecP/Data-Collector-Script.git
 ```
 You need to have installed Poetry package. If you don't have, please install using this command:
 ```
