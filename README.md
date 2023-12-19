@@ -1,3 +1,6 @@
+### Data Collector Script
+Collects and parse data from  XML, JSON, CSV files and create database with valid accounts.
+
 #### How to Set up
 
 Clone repository to specific folder:
