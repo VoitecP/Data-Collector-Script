@@ -1,11 +1,3 @@
-### Profil Software, recruitement task
-
-- https://git.profil-software.com/recruitment-12-2023/recruitement-task-backend-internship
-  
-	- Coded by Wojciech Piwowarski
-	- piwowarski.connect@gmail.com
-
-
 #### How to Set up
 
 Clone repository to specific folder:
@@ -18,7 +10,7 @@ pip install poetry
 ```
 Navigate to script folder by command:
 ```
-cd Profile-Software-Task\script
+cd Data-Collector-Script\script
 ```
 Set poetry global option, to use project folder as place to hold Virtual environment (recommended):
 ```
@@ -65,11 +57,4 @@ poetry run python script.py print-children --login <login> --password <password>
 poetry run python script.py find-similar-children-by-age --login <login> --password <password>
 ```
 
-####  If You are enjoyed in my work, you can test this command:
-```
-poetry run python script.py secret-command --login Profil --password Software
-```
----
-#### In case of problems with starting the project:
-Please contact me thru email
 
